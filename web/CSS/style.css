@@ -1,0 +1,48 @@
+body{
+    font-family:Verdana, Geneva, sans-serif;
+    background-color:#FEFCFB;
+    color:#ffffff;
+    font-size: 20px;
+
+    font-weight: 300;
+    text-decoration: none;
+    text-transform: uppercase;
+}
+
+.centrar {
+    position: absolute;
+    margin: auto;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    width: 300px;
+    height: 300px;
+    background-color: #383755;
+    border-radius: 3px;
+    text-align: center;
+    padding: 20px;
+}
+table {
+    margin:0 auto;
+    border-spacing: 5px;
+    border-collapse: separate;
+}
+
+input,button{
+    height: 30px;
+    border-radius: 3px;
+}
+input{
+    font-size: 15px;
+    width:200px;
+}
+.btn{
+    text-align: center;
+    background-color:  #F5D547;
+    height: 40px;
+    width: 200px;
+    font-weight: 700;
+    text-decoration: none;
+    text-transform: uppercase;
+}
