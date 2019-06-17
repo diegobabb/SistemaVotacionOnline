@@ -3,16 +3,19 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
+function init() {
+    cargarReporte1();
 
+}
 function cargarReporte1() {
-    fetch("ServletVotos")
+    fetch("RegistroServlet")
             .then((response) => {
                 return response.text();
                 // hay que esperar hasta que el servidor devuelva el response
             })
             .then((resultadosEnTexto) => {
                 var partidosENJSON = JSON.parse(resultadosEnTexto);
-
+                var tableENJSON = document.getElementById("reporteTable");
                 var maximo = partidosENJSON[0].votos_partido;
                 var nombre = partidosENJSON[0].siglas;
                 for (var i = 0; i < partidosENJSON.length; i++) {
@@ -26,7 +29,7 @@ function cargarReporte1() {
                     row1.appendChild(cell1);
                     row1.appendChild(cell2);
                     row1.appendChild(cell3);
-
+                    tableENJSON.appendChild(row1);
                     if (maximo <= partidosENJSON[i].votos_partido) {
                         maximo = partidosENJSON[i].votos_partido;
                         nombre = partidosENJSON[i].siglas;
@@ -43,6 +46,7 @@ function cargarReporte1() {
                         row2.appendChild(cell4);
                         row2.appendChild(cell5);
                         row2.appendChild(cell6);
+                        tableENJSON.appendChild(row2);
                     }
 
                     var row3 = document.createElement("tr");
@@ -52,6 +56,7 @@ function cargarReporte1() {
                     cell8.innerHTML = nombre;
                     row3.appendChild(cell7);
                     row3.appendChild(cell8);
+                    tableENJSON.appendChild(row3);
                 }
 
             });
