@@ -92,7 +92,11 @@ footer {
     text-align: left;
     color:black;
 }
-
+#reporteTable td,#reportePrincipal td {
+    border: 1px solid black;
+    text-align: left;
+    border-collapse: collapse;
+}
 #candidatosTable {
     border-spacing: 10px;
     border-color: #383755;

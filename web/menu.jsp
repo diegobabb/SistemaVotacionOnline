@@ -42,7 +42,7 @@
                     </ol>
                 </li>
 
-                <li class="menu-item"><a href="registro_page.jsp">REPORTES</a></li>
+                <li class="menu-item"><a href="reporte_page.jsp">REPORTES</a></li>
                 <li class="menu-item"><a href="admin_page.jsp">CONFIGURACION</a></li>
 
                 <li class="menu-item">  <a href="../Votacion/LogOut">CERRAR</a></li>
