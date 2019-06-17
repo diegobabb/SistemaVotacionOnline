@@ -39,7 +39,7 @@
                             </td>
                         <tr>
                             <td>
-                                <input type="text"  name="cedula" class="form-control" >
+                                <input type="text" id="cedula" name="cedula" class="form-control" >
                             </td>
                             <td>
                                 <button onclick="buscarUsuario()" type="button" class ="btn btn-primary">Buscar</button>
@@ -54,7 +54,7 @@
                         </tr>
                         </tr>
                         <td>
-                            <input type="text"  name="nombre" class="form-control" >
+                            <input type="text" id="nombre" name="nombre" class="form-control" >
                             </input>
                         </td>
 
@@ -66,7 +66,7 @@
                         </tr>
                         <tr>
                             <td>
-                                <input type="text" name="ap1" class="form-control">
+                                <input type="text" id="ap1" name="ap1" class="form-control">
                             </td>
                         </tr>
                         <tr>
@@ -77,7 +77,7 @@
                         </tr>
                         <tr>
                             <td>
-                                <input type="text"  name="ap2" class="form-control" >
+                                <input type="text" id="ap2" name="ap2" class="form-control" >
                             </td>
                         </tr>
                         <tfooter>
@@ -97,14 +97,12 @@
                                 </td>
                             </tr>
                         </tfooter>
-
                     </table>
-
+                    <footer>
+                        <button type="submit" class ="btn btn-primary">Siguiente</button>
+                    </footer>
+                </form>
             </div>
         </div>
     </body>
-    <footer>
-        <button type="submit" class ="btn btn-primary">Siguiente</button>
-    </footer>
-</form>
 </html>

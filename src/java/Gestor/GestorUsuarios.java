@@ -47,7 +47,8 @@ public class GestorUsuarios {
             = " select count(*) from `BD_VOTACIONES`.`usuario`;";
     private static final String NUM_ABS
             = " select count(*) from `BD_VOTACIONES`.`usuario`;";
-
+    private static final String UPDATE_USUARIO
+            = "update usuario set nombre = ?, apellido1 = ?, apellido2 = ? where cedula = ?;";
     private GestorUsuarios()
             throws InstantiationException, ClassNotFoundException, IllegalAccessException {
         db = DBManager.getDBManager(DBManager.DB_MGR.MYSQL_SERVER);
@@ -59,6 +60,22 @@ public class GestorUsuarios {
             instancia = new GestorUsuarios();
         }
         return instancia;
+    }
+
+    public void updateUsuario(String nombre, String apellido1, String apellido2, String cedula){
+          try (Connection cnx = db.getConnection(BASE_DATOS, USUARIO_BD, CLAVE_BD);
+                PreparedStatement stm = cnx.prepareStatement(UPDATE_USUARIO)) {
+            stm.setString(1, nombre);
+            stm.setString(2, apellido1);
+            stm.setString(3, apellido2);
+            stm.setString(4, cedula);
+            if (stm.executeUpdate() != 1) {
+                throw new SQLException("No se puede actualizar usuario");
+            }
+            cnx.close();
+        } catch (Exception e) {
+            System.err.println(e.getMessage());
+        }
     }
 
     public void agregarUsuario(String ced, String ap1, String ap2, String nombre) {

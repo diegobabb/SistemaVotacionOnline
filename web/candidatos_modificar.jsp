@@ -18,12 +18,10 @@
     </head>
 
     <body onload="cargarPartidos()">
-        <form action="ModificarCandidato" method="POST" enctype="multipart/form-data">
+        <form action="ModificarCandidato" method="GET" enctype="multipart/form-data">
             <div class="first">
-
                 Registro de Candidatos
             </div>
-
             <div class="second">
                 <div class="centro">
 
@@ -36,7 +34,6 @@
                             }
 
                         %>
-
                         <tr>
                             <td>
                                 Cedula
@@ -49,8 +46,6 @@
                                 <button onclick="buscarUsuario()" type="button" class ="btn btn-primary">Buscar</button>
                             </td>
                         </tr>
-
-
                         <tr>
                             <td>
                                 Nombre
@@ -91,11 +86,10 @@
                         </tr>
                         <tr>
                             <td>
-                                <select name="partido" class="form-control" id="partido" >
-
+                                <select id="partido" name="partido" class="form-control">
                                     <option value="0">Seleccione un Partido...</option>
+                                </select>
                             </td>
-
                         </tr>
                         <tr>
 
@@ -107,9 +101,7 @@
                             <td>
                                 <input type="file" name="imagen"class="form-control-file" id="exampleFormControlFile1">
                             </td>
-
                         </tr>
-
                         <tfooter>
                             <tr>
                                 <td>

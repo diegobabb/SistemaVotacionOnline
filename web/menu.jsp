@@ -21,7 +21,7 @@
                     <a href="#0">USUARIOS</a>
                     <ol class="sub-menu">
                         <li class="menu-item"><a href="usuarios_page.jsp">AGREGAR</a></li>
-                        <li class="menu-item"><a href="#0">MODIFICAR</a></li>
+                        <li class="menu-item"><a href="usuarios_modificar.jsp">MODIFICAR</a></li>
                     </ol>
                 </li>
                 <li class="menu-item">
@@ -29,7 +29,7 @@
                     <ol class="sub-menu">
 
                         <li class="menu-item"><a href="candidatos_registro.jsp">AGREGAR</a></li>
-                        <li class="menu-item"><a href="#0">MODIFICAR</a></li>
+                        <li class="menu-item"><a href="candidatos_modificar.jsp">MODIFICAR</a></li>
 
                     </ol>
                 </li>
@@ -37,7 +37,7 @@
                     <a href="#0">PARTIDOS</a>
                     <ol class="sub-menu">
                         <li class="menu-item"><a href="partidos_registro.jsp">AGREGAR</a></li>
-                        <li class="menu-item"><a href="#0">MOFIFICAR</a></li>
+                        <li class="menu-item"><a href="partidos_modificar.jsp">MOFIFICAR</a></li>
 
                     </ol>
                 </li>

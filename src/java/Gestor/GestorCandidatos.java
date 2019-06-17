@@ -9,8 +9,6 @@ import Modelo.Candidato;
 import Modelo.Partido;
 import Modelo.Usuario;
 import cr.ac.database.managers.DBManager;
-import java.io.BufferedInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -22,15 +20,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
-import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipOutputStream;
-import javax.servlet.ServletOutputStream;
-import javax.servlet.http.HttpServletResponse;
 
 /**
  *
@@ -84,6 +73,9 @@ public class GestorCandidatos {
             + "  `candidato`.`id_partido`=? AND `partido`.`id`=?;";
     private static final String VOTOS_CANDIDATO = " select sum(num_votos)   from `BD_VOTACIONES`.`candidato` where id=?;";
 
+    private static final String UPDATE_CANDIDATO
+            = "update candidato set id_partido = ? where id_usuario = ?;";
+
     private GestorCandidatos()
             throws InstantiationException, ClassNotFoundException, IllegalAccessException {
         db = DBManager.getDBManager(DBManager.DB_MGR.MYSQL_SERVER);
@@ -95,6 +87,20 @@ public class GestorCandidatos {
             instancia = new GestorCandidatos();
         }
         return instancia;
+    }
+
+    public void updateCadidato(int partido, int usuario) {
+        try (Connection cnx = db.getConnection(BASE_DATOS, USUARIO_BD, CLAVE_BD);
+                PreparedStatement stm = cnx.prepareStatement(UPDATE_CANDIDATO)) {
+            stm.setInt(1, partido);
+            stm.setInt(2, usuario);
+            if (stm.executeUpdate() != 1) {
+                throw new SQLException("No se puede actualizar usuario");
+            }
+            cnx.close();
+        } catch (Exception e) {
+            System.err.println(e.getMessage());
+        }
     }
 
     public void readBlob(int candidateId) {

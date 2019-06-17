@@ -48,6 +48,10 @@ public class ServletVotos extends HttpServlet {
         try (PrintWriter out = response.getWriter()) {
             GestorCandidatos g = GestorCandidatos.obtenerInstancia();
             GestorPartidos gp = GestorPartidos.obtenerInstancia();
+            
+            
+            
+            
             ArrayList<Partido> partidos = gp.listarPartidos();
             JSONArray arrayPartido = new JSONArray();
             for (Partido partido : partidos) {
