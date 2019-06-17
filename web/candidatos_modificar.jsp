@@ -1,22 +1,26 @@
-<%@page import="Modelo.Votacion"%>
-<%@page import="Gestor.GestorCandidatos"%>
-<%@page import="Modelo.Usuario"%>
-<%@page import="Modelo.Candidato"%>
-<%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%--
+    Document   : candidatos_modificar
+    Created on : 06/06/2019, 05:30:26 PM
+    Author     : Sammy Guergachi <sguergachi at gmail.com>
+--%>
 
+<%@page import="Modelo.Votacion"%>
+<%@page import="Modelo.Usuario"%>
+<%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
-<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" crossorigin="anonymous">
-<link href="CSS/principal_style.css" rel="stylesheet" type="text/css"/>
-<script src="JS/script.js" type="text/javascript"></script>
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <title>Candidato</title>
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" crossorigin="anonymous">
+        <link href="CSS/principal_style.css" rel="stylesheet" type="text/css"/>
+        <script src="JS/script.js" type="text/javascript"></script>
+        <title>Candidatos</title>
     </head>
+
     <body onload="cargarPartidos()">
-        <%@include file="/menu.jsp" %>
-        <form action="ServletCandidatos" method="POST" enctype="multipart/form-data">
+        <form action="ModificarCandidato" method="POST" enctype="multipart/form-data">
             <div class="first">
+
                 Registro de Candidatos
             </div>
 

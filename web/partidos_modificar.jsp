@@ -4,6 +4,7 @@
     Author     : Sammy Guergachi <sguergachi at gmail.com>
 --%>
 
+<%@page import="Modelo.Votacion"%>
 <%@page import="Modelo.Usuario"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
@@ -30,10 +31,10 @@
 
                             <%
                                 Usuario user = (Usuario) request.getSession(false).getAttribute("usuario");
+                                Votacion v = (Votacion) request.getSession(false).getAttribute("votacion");
                                 if (user == null) {
                                     response.sendRedirect("index.jsp");
                                 }
-
                             %>
 
                             <tr>

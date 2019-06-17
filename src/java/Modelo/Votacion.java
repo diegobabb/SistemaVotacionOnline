@@ -6,6 +6,8 @@
 package Modelo;
 
 import Gestor.GestorCandidatos;
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -15,93 +17,61 @@ import java.util.Date;
  */
 public class Votacion {
 
+    private int id;
     private int tipo; //1-Ni abierta ni cerrada
     //2-Abierta
     //3-Cerrada
 
-    private Hora horaInicio;
-    private Hora horaFinal;
-    private int horas;
-    private static Votacion instancia = null;
+    private Timestamp horaInicio;
+    private Timestamp horaFinal;
 
-    public Votacion() {
-        horaFinal = new Hora(0, 0, 0);
-        horaInicio = new Hora(0, 0, 0);
-        tipo = 1;
-
+    public Votacion(int id, int tipo, Timestamp horaInicio, Timestamp horaFinal) {
+        this.id = id;
+        this.tipo = tipo;
+        this.horaInicio = horaInicio;
+        this.horaFinal = horaFinal;
     }
 
-    public static Votacion obtenerInstancia()
-            throws InstantiationException, ClassNotFoundException, IllegalAccessException {
-        if (instancia == null) {
-            instancia = new Votacion();
-        }
-        return instancia;
+    public int getId() {
+        return id;
     }
 
-    public void abrirVotacion(Hora h, int hour) {
-
-        if (tipo == 1) {
-            horas = hour;
-            setTipo(2);
-            setHoraInicio(h);
-            horaFinal = new Hora(horaInicio.getHora() + horas, horaInicio.getMinuto(), horaInicio.getSegundo());
-
-        }
-
-    }
-
-    public boolean estaAbierta(Hora h) {
-        System.out.printf("Hora Actual %s \n", h);
-        System.out.printf("Hora de Inicio %s y Hora Final %s %n", horaInicio, horaFinal);
-        if (tipo != 1) {
-            if (horaInicio.getHora() <= h.getHora() && h.getHora() < horaFinal.getHora()) {
-                return true;
-            } else if (0 <= h.getMinuto() && h.getMinuto() <= horaFinal.getMinuto()) {
-                return true;
-            } else {
-                return false;
-            }
-        }
-        return false;
+    public void setId(int id) {
+        this.id = id;
     }
 
     public int getTipo() {
         return tipo;
     }
 
-    public int getHoras() {
-        return horas;
-    }
-
     public void setTipo(int tipo) {
         this.tipo = tipo;
     }
 
-    public void setHoraInicio(Hora horaInicio) {
+    public String getHoraInicio() {
+        String timeStamp = new SimpleDateFormat("HH:mm:ss").format(horaInicio);
+        return timeStamp;
+    }
+
+    public void setHoraInicio(Timestamp horaInicio) {
         this.horaInicio = horaInicio;
     }
 
-    public Hora getHoraInicio() {
-        return horaInicio;
+    public String getHoraFinal() {
+
+        String timeStamp = new SimpleDateFormat("HH:mm:ss").format(horaFinal);
+        return timeStamp;
     }
 
-    public Hora getHoraFinal() {
-        return horaFinal;
-    }
-
-    public void setHoraFinal(Hora horaFinal) {
+    public void setHoraFinal(Timestamp horaFinal) {
         this.horaFinal = horaFinal;
     }
 
-//    public static void main(String[] args) {
-//        Votacion v = new Votacion();
-//        v.abrirVotacion(new Hora(Calendar.HOUR_OF_DAY, Calendar.MINUTE, Calendar.SECOND), 2);
-//        if (v.estaAbierta(new Hora(Calendar.HOUR_OF_DAY + 2, Calendar.MINUTE + 50, Calendar.SECOND))) {
-//            System.out.print("SI ESTA ABIERTA \n");
-//        } else {
-//            System.out.print("NO ESTA ABIERTA \n");
-//        }
-//
-//    }
+    public boolean estaAbierto() {
+        Timestamp ahora = new Timestamp(System.currentTimeMillis());
+        boolean y = horaInicio.before(ahora);
+        boolean x = horaFinal.after(ahora);
+        return (x && y);
+    }
+
 }

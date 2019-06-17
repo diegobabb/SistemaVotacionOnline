@@ -7,11 +7,10 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html>
-    <body>
-
+    <body onload="cargarDatos()">
+        <%@include file="/menu_usuario.jsp" %>
         <div class="first">
             Sistema de Votación
-            <button type="button"onclick="cargarDatos()" >Click</button>
         </div>
         <div class="second">
             <table id="candidatosTable">

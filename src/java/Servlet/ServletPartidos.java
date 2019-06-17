@@ -1,80 +1,62 @@
+package Servlet;
+
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
 
-import Gestor.GestorUsuarios;
-import Modelo.Usuario;
+import Gestor.GestorPartidos;
+
 import java.io.IOException;
 import java.io.PrintWriter;
-import static java.lang.System.out;
 import java.sql.SQLException;
 import javax.servlet.ServletException;
+import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-import org.json.JSONArray;
-import org.json.JSONObject;
+import javax.servlet.http.Part;
 
 /**
  *
  * @author Sammy Guergachi <sguergachi at gmail.com>
  */
-@WebServlet(urlPatterns = {"/ServletLogin"})
-public class ServletLogin extends HttpServlet {
+@WebServlet(urlPatterns = {"/ServletPartidos"})
+@MultipartConfig
+public class ServletPartidos extends HttpServlet {
 
+    /**
+     * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
+     * methods.
+     *
+     * @param request servlet request
+     * @param response servlet response
+     * @throws ServletException if a servlet-specific error occurs
+     * @throws IOException if an I/O error occurs
+     */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        switch (request.getServletPath()) {
-            case "/ServletLogin":
-                this.LogIn(request, response);
-                break;
-            case "/LogOut":
-                this.LogOut(request, response);
-                break;
-
-        }
-    }
-
-    private void LogIn(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-
         response.setContentType("text/html;charset=UTF-8");
-        try {
-            GestorUsuarios g = GestorUsuarios.obtenerInstancia();
-            Usuario user = g.getUsuario(
-                    request.getParameter("user"), request.getParameter("password"));
-            if (user != null) {
-                request.getSession(true).setAttribute("usuario", user);
-                if (g.getAdmin(user.getCedula()) == 0) {
-                    String c = user.getClave();
-                    String ced = user.getCedula();
-                    if (!c.equals(ced)) {
-                        request.getRequestDispatcher("/principal.jsp").forward(request, response);
-                    } else {
-                        request.getRequestDispatcher("/usuarios_registro.jsp").forward(request, response);
-                    }
-                } else {
-                    request.getRequestDispatcher("/menu.jsp").forward(request, response);
-                }
-            } else {
-                request.setAttribute("error", "Usuario invalido");
-                request.getRequestDispatcher("/index.jsp").forward(request, response);
-            }
+        try (PrintWriter out = response.getWriter()) {
+            GestorPartidos g = GestorPartidos.obtenerInstancia();
+            String nom = request.getParameter("nombre");
+            String sig = request.getParameter("siglas");
 
-        } catch (ClassNotFoundException | IllegalAccessException | InstantiationException | SQLException ex) {
+            if (nom != "" && sig != "") {
+                Part part = request.getPart("imagen");
+                if (part != null) {
+                    g.agregarPartido(nom, sig, part.getInputStream());
+                    request.setAttribute("error", "Si");
+                } else {
+                    request.setAttribute("error", "No");
+                }
+            }
+            request.getRequestDispatcher("/partidos_registro.jsp").forward(request, response);
+        } catch (ClassNotFoundException | IllegalAccessException | InstantiationException ex) {
             request.getRequestDispatcher("/index.jsp").forward(request, response);
         }
-    }
-
-    private void LogOut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-
-        HttpSession session = request.getSession(true);
-        session.removeAttribute("usuario");
-        session.invalidate();
-        request.getRequestDispatcher("/Server").forward(request, response);
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

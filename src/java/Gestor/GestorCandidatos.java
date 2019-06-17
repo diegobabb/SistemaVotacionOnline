@@ -31,7 +31,7 @@ public class GestorCandidatos {
     private static final String CLAVE_BD = "root";
     private DBManager db = null;
     private static GestorCandidatos instancia = null;
-
+    private static final String INCREMENTAR_VOTOS = "UPDATE `BD_VOTACIONES`.`candidato` SET num_votos = num_votos + 1 WHERE id = ?;";
     private static final String INSERT_CANDIDATO
             = "INSERT INTO `BD_VOTACIONES`.`candidato` (`id_usuario`,`id_partido`,`foto_img`)"
             + "VALUES(?,?,?);";
@@ -49,19 +49,23 @@ public class GestorCandidatos {
 
     private static final String GET_IMAGEN
             = " SELECT DISTINCT foto_img"
-            + " FROM `BD_VOTACIONES`.`usuario`"
-            + " INNER JOIN `BD_VOTACIONES`.`candidato`"
-            + " ON `BD_VOTACIONES`.`usuario`.id = ?;";
+            + " FROM `BD_VOTACIONES`.`candidato`"
+            + " WHERE id = ?;";
 
     private static final String GET_ID
             = " SELECT id"
             + " FROM `BD_VOTACIONES`.`usuario`"
             + " WHERE cedula =? ;";
 
-    private static final String LISTAR_CANDIDATOS = "SELECT usuario.id,usuario.cedula,usuario.nombre, usuario.apellido1,usuario.apellido2,usuario.clave,partido.nombre"
+    private static final String LISTAR_CANDIDATOS = "SELECT candidato.id,usuario.cedula,usuario.nombre, usuario.apellido1,usuario.apellido2,usuario.clave,partido.nombre"
             + " FROM ((`BD_VOTACIONES`.`candidato`"
             + " INNER JOIN `BD_VOTACIONES`.`usuario` ON `BD_VOTACIONES`.`candidato`.id_usuario = `BD_VOTACIONES`.`usuario`.id)"
             + " INNER JOIN `BD_VOTACIONES`.`partido`ON `BD_VOTACIONES`.`candidato`.id_partido= ? AND `BD_VOTACIONES`.`partido`.id= ?);";
+
+    private static final String VOTOS_EFECTIVOS = "select sum(num_votos) from `BD_VOTACIONES`.`candidato`;";
+    private static final String VOTOS_PARTIDO = "  select sum(num_votos)   from `BD_VOTACIONES`.`candidato` inner join `BD_VOTACIONES`.`partido` on"
+            + "  `candidato`.`id_partido`=? AND `partido`.`id`=?;";
+    private static final String VOTOS_CANDIDATO = " select sum(num_votos)   from `BD_VOTACIONES`.`candidato` where id=?;";
 
     private GestorCandidatos()
             throws InstantiationException, ClassNotFoundException, IllegalAccessException {
@@ -87,7 +91,7 @@ public class GestorCandidatos {
             try (ResultSet rs = stm.executeQuery()) {
 
                 while (rs.next()) {
-                    int id = rs.getInt("usuario.id");
+                    int id = rs.getInt("candidato.id");
                     String ced = rs.getString("usuario.cedula");
                     String nom = rs.getString("usuario.nombre");
                     String ap1 = rs.getString("usuario.apellido1");
@@ -237,7 +241,6 @@ public class GestorCandidatos {
                     String nom = rs.getString(1);
                     String sig = rs.getString(2);
                     p = new Partido(id, nom, sig);
-
                     return p;
                 }
                 cnx.close();
@@ -249,6 +252,85 @@ public class GestorCandidatos {
             System.out.println("Excepcion  PreparedStatement getUsuario" + e.getMessage());
         }
         return null;
+    }
+
+    public void incrementarVoto(int id) {
+        try (Connection cnx = db.getConnection(BASE_DATOS, USUARIO_BD, CLAVE_BD);
+                PreparedStatement stm = cnx.prepareStatement(INCREMENTAR_VOTOS)) {
+            stm.setInt(1, id);
+            if (stm.executeUpdate() != 1) {
+                throw new SQLException("No se puede agregarCandidato");
+            }
+            cnx.close();
+        } catch (Exception e) {
+            System.err.println(e.getMessage());
+        }
+    }
+
+    public int votosEfectivos() {
+        try (Connection cnx = db.getConnection(BASE_DATOS, USUARIO_BD, CLAVE_BD);
+                Statement stm = cnx.createStatement();
+                ResultSet rs = stm.executeQuery(VOTOS_EFECTIVOS)) {
+            if (rs.next()) {
+
+                int i = rs.getInt(1);
+
+                cnx.close();
+                return i;
+
+            }
+        } catch (Exception e) {
+            System.err.println(e.getMessage());
+        }
+        return -1;
+    }
+
+    public int votoPorPartido(int id) {
+        try (Connection cnx = db.getConnection(BASE_DATOS, USUARIO_BD, CLAVE_BD);
+                PreparedStatement stm = cnx.prepareStatement(VOTOS_PARTIDO)) {
+            stm.clearParameters();
+            stm.setInt(1, id);
+            stm.setInt(2, id);
+            try (ResultSet rs = stm.executeQuery()) {
+
+                if (rs.next()) {
+                    int num = rs.getInt(1);
+
+                    return num;
+                }
+                cnx.close();
+            } catch (Exception e) {
+                System.out.println("Excepcion RESUT SET getId" + e.getMessage());
+            }
+
+        } catch (Exception e) {
+            System.out.println("Excepcion  PreparedStatement getId" + e.getMessage());
+        }
+        return -1;
+    }
+
+    public int votoPorCandidaro(int id) {
+        try (Connection cnx = db.getConnection(BASE_DATOS, USUARIO_BD, CLAVE_BD);
+                PreparedStatement stm = cnx.prepareStatement(VOTOS_CANDIDATO)) {
+            stm.clearParameters();
+            stm.setInt(1, id);
+
+            try (ResultSet rs = stm.executeQuery()) {
+
+                if (rs.next()) {
+                    int num = rs.getInt(1);
+
+                    return num;
+                }
+                cnx.close();
+            } catch (Exception e) {
+                System.out.println("Excepcion RESUT SET getId" + e.getMessage());
+            }
+
+        } catch (Exception e) {
+            System.out.println("Excepcion  PreparedStatement getId" + e.getMessage());
+        }
+        return 0;
     }
 
 }

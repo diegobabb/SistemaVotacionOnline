@@ -11,6 +11,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.Date;
 
 /**
@@ -36,8 +37,16 @@ public class GestorUsuarios {
             = "UPDATE `BD_VOTACIONES`.`usuario` SET `clave`= ? WHERE cedula = ?;";
     private static final String GET_ADMIN
             = "SELECT admin FROM `BD_VOTACIONES`.`usuario` where cedula = ?;";
-    private static final String EXISTE_USUARIO
-            = "SELECT cedula FROM `BD_VOTACIONES`.`usuario` WHERE cedula=?  ;";
+    private static final String VOTAR
+            = "UPDATE `BD_VOTACIONES`.`usuario` SET `voto`=1 WHERE `id` = ?;";
+
+    private static final String YA_VOTO
+            = "SELECT voto FROM `BD_VOTACIONES`.`usuario` where cedula = ?;";
+
+    private static final String NUM_VOTANTES
+            = " select count(*) from `BD_VOTACIONES`.`usuario`;";
+    private static final String NUM_ABS
+            = " select count(*) from `BD_VOTACIONES`.`usuario`;";
 
     private GestorUsuarios()
             throws InstantiationException, ClassNotFoundException, IllegalAccessException {
@@ -166,6 +175,75 @@ public class GestorUsuarios {
 
         } catch (Exception e) {
             System.out.println("Excepcion  PreparedStatement getAdmin" + e.getMessage());
+        }
+        return -1;
+    }
+
+    public boolean yaVoto(Usuario user) {
+        try (Connection cnx = db.getConnection(BASE_DATOS, USUARIO_BD, CLAVE_BD);
+                PreparedStatement stm = cnx.prepareStatement(YA_VOTO)) {
+            stm.setString(1, user.getCedula());
+            ResultSet rs = stm.executeQuery();
+            if (rs.next()) {
+
+                int i = rs.getInt(1);
+
+                cnx.close();
+                return (i == 1);
+
+            }
+        } catch (Exception e) {
+            System.err.println(e.getMessage());
+        }
+
+        return false;
+    }
+
+    public void votar(Usuario user) {
+        try (Connection cnx = db.getConnection(BASE_DATOS, USUARIO_BD, CLAVE_BD);
+                PreparedStatement stm = cnx.prepareStatement(VOTAR)) {
+            stm.setInt(1, user.getId());
+
+            if (stm.executeUpdate() != 1) {
+                throw new SQLException("No se puede votar");
+            }
+        } catch (Exception e) {
+            System.err.println(e.getMessage());
+        }
+    }
+
+    public int cantidadVotantes() {
+        try (Connection cnx = db.getConnection(BASE_DATOS, USUARIO_BD, CLAVE_BD);
+                Statement stm = cnx.createStatement();
+                ResultSet rs = stm.executeQuery(NUM_VOTANTES)) {
+            if (rs.next()) {
+
+                int i = rs.getInt(1);
+
+                cnx.close();
+                return i;
+
+            }
+        } catch (Exception e) {
+            System.err.println(e.getMessage());
+        }
+        return -1;
+    }
+
+    public int abstencionismo() {
+        try (Connection cnx = db.getConnection(BASE_DATOS, USUARIO_BD, CLAVE_BD);
+                Statement stm = cnx.createStatement();
+                ResultSet rs = stm.executeQuery(NUM_ABS)) {
+            if (rs.next()) {
+
+                int i = rs.getInt(1);
+
+                cnx.close();
+                return i;
+
+            }
+        } catch (Exception e) {
+            System.err.println(e.getMessage());
         }
         return -1;
     }

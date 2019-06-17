@@ -48,7 +48,7 @@ function cargarDatos() {
             })
             .then((resultadosEnTexto) => {
 
-                console.log("Resultados Partidos: " + resultadosEnTexto);
+                console.log("Resultados Candidatos Y Partidos: " + resultadosEnTexto);
                 var cant = 0;
                 var table = document.getElementById("candidatosTable");
                 var tblBody = document.createElement("tbody");
@@ -83,7 +83,8 @@ function cargarDatos() {
                         form1.setAttribute("action", "SevlrtCargarImagen");
                         form1.setAttribute("method", "GET");
                         var img = document.createElement("IMG");
-                        img.setAttribute("src", "SevlrtCargarImagen?id=" + cands[j].id);
+                        img.setAttribute("src", "SevlrtCargarImagen?id=" + cands[j].idCandidato);
+                        console.log("img.setAttribute(SERVLETCARGARIMAGEN CANDIDATO" + cands[j].idCandidato);
                         var t = document.createTextNode(cands[j].nombre + " " + cands[j].apellido1 + " " + cands[j].apellido2);
                         form1.appendChild(img);
                         div1.appendChild(form1);
@@ -104,6 +105,7 @@ function cargarDatos() {
                         var t1 = document.createTextNode(partidosENJSON[i].nombre);
                         var btn = document.createElement("button");
                         btn.setAttribute("id", "btn");
+                        btn.setAttribute("onclick", "votar(" + cands[j].idCandidato + ")");
                         btn.innerHTML = "Votar";
 
                         form2.appendChild(img1);
@@ -112,9 +114,6 @@ function cargarDatos() {
                         back.appendChild(div3);
                         back.appendChild(div4);
                         back.appendChild(btn);
-
-
-
 
                         flipper.appendChild(front);
                         flipper.appendChild(back);
@@ -131,7 +130,36 @@ function cargarDatos() {
 }
 
 
+function votar(id) {
 
+
+    fetch("VotacionServicio?id=" + id)
+            .then((response) => {
+                return response.text();
+                // hay que esperar hasta que el servidor devuelva el response
+            })
+            .then((resultadosEnTexto) => {
+
+                var obj = JSON.parse(resultadosEnTexto);
+                switch (obj.voto) {
+                    case 1:
+                        alert("Voto Registrado");
+
+                        break;
+
+                    case 2:
+                        alert("Voto Cancelado, ya habias votado anteriormente");
+
+                        break;
+                    case 3:
+                        alert("La votacion ha cerrado");
+
+                        break;
+
+                }
+            });
+
+}
 
 //function agregarCandidato() {
 //    var ced_input = document.getElementById("cedula");

@@ -1,29 +1,30 @@
+package Servlet;
+
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
 
-import Gestor.GestorPartidos;
-
+import Gestor.GestorUsuarios;
+import Modelo.Usuario;
 import java.io.IOException;
 import java.io.PrintWriter;
+import static java.lang.System.out;
 import java.sql.SQLException;
 import javax.servlet.ServletException;
-import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.Part;
+import org.json.JSONObject;
 
 /**
  *
  * @author Sammy Guergachi <sguergachi at gmail.com>
  */
-@WebServlet(urlPatterns = {"/ServletPartidos"})
-@MultipartConfig
-public class ServletPartidos extends HttpServlet {
+@WebServlet(urlPatterns = {"/ServletUsuarios"})
+public class ServletUsuarios extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -37,27 +38,29 @@ public class ServletPartidos extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-        try (PrintWriter out = response.getWriter()) {
-            GestorPartidos g = GestorPartidos.obtenerInstancia();
+        try {
+            GestorUsuarios g = GestorUsuarios.obtenerInstancia();
+            String ced = request.getParameter("cedula");
+            String ap1 = request.getParameter("ap1");
+            String ap2 = request.getParameter("ap2");
             String nom = request.getParameter("nombre");
-            String sig = request.getParameter("siglas");
+            JSONObject success = new JSONObject();
 
-            if (nom != "" && sig != "") {
-                Part part = request.getPart("imagen");
-                if (part != null) {
-                    g.agregarPartido(nom, sig, part.getInputStream());
-                    request.setAttribute("error", "Si");
-                } else {
-                    request.setAttribute("error", "No");
-                }
+            if (nom != "" && ced != "" && ap1 != "" && ap2 != "" && !g.findUser(ced)) {
+
+                g.agregarUsuario(ced, ap1, ap2, nom);
+                request.setAttribute("error", "Si");
+
+            } else {
+                request.setAttribute("error", "No");
             }
-            request.getRequestDispatcher("/partidos_registro.jsp").forward(request, response);
+            request.getRequestDispatcher("/usuarios_page.jsp").forward(request, response);
         } catch (ClassNotFoundException | IllegalAccessException | InstantiationException ex) {
             request.getRequestDispatcher("/index.jsp").forward(request, response);
         }
     }
 
-    // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
+// <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /**
      * Handles the HTTP <code>GET</code> method.
      *

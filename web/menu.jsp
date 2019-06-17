@@ -41,8 +41,11 @@
 
                     </ol>
                 </li>
+
                 <li class="menu-item"><a href="#0">REPORTES</a></li>
-                <li class="menu-item"><a href="#0">CONFIGURACION</a></li>
+                <li class="menu-item"><a href="admin_page.jsp">CONFIGURACION</a></li>
+
+                <li class="menu-item">  <a href="../Votacion/LogOut">CERRAR</a></li>
             </ol>
         </nav>
 
