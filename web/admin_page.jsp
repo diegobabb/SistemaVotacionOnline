@@ -72,9 +72,15 @@
                             </td>
                         </tr>
                         <% }%>
+
                     </table>
                 </form>
             </div>
         </div>
+        <form action="ExportarVotacion" method="GET">
+            <div>
+                <button type="submit"class ="btn btn-primary">Exportar</button>
+            </div>
+        </form>
     </body>
 </html>

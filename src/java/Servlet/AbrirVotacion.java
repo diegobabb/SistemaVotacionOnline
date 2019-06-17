@@ -5,12 +5,18 @@ package Servlet;
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
+import Gestor.GestorCandidatos;
+import Gestor.GestorPartidos;
+import Gestor.GestorUsuarios;
 import Gestor.GestorVotacion;
+import Modelo.Candidato;
 import Modelo.Hora;
+import Modelo.Partido;
 import Modelo.Votacion;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -19,12 +25,14 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 /**
  *
  * @author Sammy Guergachi <sguergachi at gmail.com>
  */
-@WebServlet(urlPatterns = {"/AbrirVotacion"})
+@WebServlet(urlPatterns = {"/AbrirVotacion", "/ExportarVotacion"})
 public class AbrirVotacion extends HttpServlet {
 
     /**
@@ -37,8 +45,21 @@ public class AbrirVotacion extends HttpServlet {
      * @throws IOException if an I/O error occurs
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException, InstantiationException, ClassNotFoundException, IllegalAccessException {
+            throws ServletException, IOException, InstantiationException, ClassNotFoundException, IllegalAccessException, SQLException {
         response.setContentType("text/html;charset=UTF-8");
+        switch (request.getServletPath()) {
+            case "/RegistroServlet":
+                this.AbrirVotacion(request, response);
+                break;
+            case "/RegistroPrincipal":
+                this.ExportarVotacion(request, response);
+                break;
+
+        }
+    }
+
+    private void AbrirVotacion(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, InstantiationException, ClassNotFoundException, IllegalAccessException, SQLException {
+
         try (PrintWriter out = response.getWriter()) {
             GestorVotacion votacion = GestorVotacion.obtenerInstancia();
             Votacion v = votacion.selectUltimo();
@@ -71,7 +92,26 @@ public class AbrirVotacion extends HttpServlet {
 
     }
 
+    private void ExportarVotacion(HttpServletRequest request, HttpServletResponse response) {
+        try {
+
+            GestorCandidatos gc = GestorCandidatos.obtenerInstancia();
+            GestorPartidos gp = GestorPartidos.obtenerInstancia();
+
+            ArrayList<Partido> partidos = gp.listarPartidos();
+
+            for (Partido partido : partidos) {
+                ArrayList<Candidato> cands = gc.listarCandidatos(partido.getId());
+                for (Candidato c : cands) {
+                    gc.readBlob(c.getId());
+                }
+            }
+        } catch (InstantiationException | ClassNotFoundException | IllegalAccessException | SQLException ex) {
+
+        }
+    }
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
+
     /**
      * Handles the HTTP <code>GET</code> method.
      *
@@ -90,6 +130,8 @@ public class AbrirVotacion extends HttpServlet {
         } catch (ClassNotFoundException ex) {
             Logger.getLogger(AbrirVotacion.class.getName()).log(Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
+            Logger.getLogger(AbrirVotacion.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (SQLException ex) {
             Logger.getLogger(AbrirVotacion.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
@@ -112,6 +154,8 @@ public class AbrirVotacion extends HttpServlet {
         } catch (ClassNotFoundException ex) {
             Logger.getLogger(AbrirVotacion.class.getName()).log(Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
+            Logger.getLogger(AbrirVotacion.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (SQLException ex) {
             Logger.getLogger(AbrirVotacion.class.getName()).log(Level.SEVERE, null, ex);
         }
     }

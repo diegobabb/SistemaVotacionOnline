@@ -10,6 +10,8 @@ import Modelo.Partido;
 import Modelo.Usuario;
 import Utilities.IOUtilities;
 import cr.ac.database.managers.DBManager;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -100,6 +102,34 @@ public class GestorPartidos {
             System.out.println("Excepcion  PreparedStatement getUsuario" + e.getMessage());
         }
         return null;
+    }
+
+    public void readBlob(int id) {
+
+        try (Connection cnx = db.getConnection(BASE_DATOS, USUARIO_BD, CLAVE_BD);
+                PreparedStatement pstmt = cnx.prepareStatement(GET_IMAGE)) {
+            // set parameter;
+            pstmt.setInt(1, id);
+            try (ResultSet rs = pstmt.executeQuery()) {
+
+                // write binary stream into file
+                String filename = "C:\\Users\\Nao Rojas\\Desktop\\UNA\\Progra 4\\Practicas\\Votacion\\" + "Partido_foto" + id;
+                File file = new File(filename);
+                FileOutputStream output = new FileOutputStream(file);
+
+                System.out.println("Writing to file " + file.getAbsolutePath());
+                while (rs.next()) {
+                    InputStream input = rs.getBinaryStream("foto_img");
+                    byte[] buffer = new byte[1024];
+                    while (input.read(buffer) > 0) {
+                        output.write(buffer);
+                    }
+                }
+            }
+        } catch (SQLException | IOException e) {
+            System.out.println(e.getMessage());
+        }
+
     }
 
     public ArrayList<Partido> listarPartidos() throws SQLException {

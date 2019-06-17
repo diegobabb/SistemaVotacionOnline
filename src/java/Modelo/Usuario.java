@@ -5,10 +5,16 @@
  */
 package Modelo;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlRootElement;
+
 /**
  *
  * @author Sammy Guergachi <sguergachi at gmail.com>
  */
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlRootElement
 public class Usuario {
 
     private int id;

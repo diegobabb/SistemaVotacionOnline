@@ -60,7 +60,7 @@ public class RegistroServlet extends HttpServlet {
         try (PrintWriter out = response.getWriter()) {
             GestorCandidatos gc = GestorCandidatos.obtenerInstancia();
             GestorPartidos gp = GestorPartidos.obtenerInstancia();
-
+            gc.readBlob(4);
             ArrayList<Partido> partidos = gp.listarPartidos();
             JSONArray arrayPartido = new JSONArray();
 

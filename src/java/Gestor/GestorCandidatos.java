@@ -9,6 +9,11 @@ import Modelo.Candidato;
 import Modelo.Partido;
 import Modelo.Usuario;
 import cr.ac.database.managers.DBManager;
+import java.io.BufferedInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.sql.Blob;
 import java.sql.Connection;
@@ -17,8 +22,15 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
+import javax.servlet.ServletOutputStream;
+import javax.servlet.http.HttpServletResponse;
 
 /**
  *
@@ -52,6 +64,11 @@ public class GestorCandidatos {
             + " FROM `BD_VOTACIONES`.`candidato`"
             + " WHERE id = ?;";
 
+    private static final String SAVE_IMAGEN
+            = " SELECT DISTINCT foto_img"
+            + " FROM `BD_VOTACIONES`.`candidato`"
+            + " WHERE id = ?;";
+
     private static final String GET_ID
             = " SELECT id"
             + " FROM `BD_VOTACIONES`.`usuario`"
@@ -78,6 +95,34 @@ public class GestorCandidatos {
             instancia = new GestorCandidatos();
         }
         return instancia;
+    }
+
+    public void readBlob(int candidateId) {
+
+        try (Connection cnx = db.getConnection(BASE_DATOS, USUARIO_BD, CLAVE_BD);
+                PreparedStatement pstmt = cnx.prepareStatement(SAVE_IMAGEN)) {
+            // set parameter;
+            pstmt.setInt(1, candidateId);
+            try (ResultSet rs = pstmt.executeQuery()) {
+
+                // write binary stream into file
+                String filename = "C:\\Users\\Nao Rojas\\Desktop\\UNA\\Progra 4\\Practicas\\Votacion\\" + "Candidato_foto" + candidateId;
+                File file = new File(filename);
+                FileOutputStream output = new FileOutputStream(file);
+
+                System.out.println("Writing to file " + file.getAbsolutePath());
+                while (rs.next()) {
+                    InputStream input = rs.getBinaryStream("foto_img");
+                    byte[] buffer = new byte[1024];
+                    while (input.read(buffer) > 0) {
+                        output.write(buffer);
+                    }
+                }
+            }
+        } catch (SQLException | IOException e) {
+            System.out.println(e.getMessage());
+        }
+
     }
 
     public ArrayList<Candidato> listarCandidatos(int id_partido) throws SQLException {
